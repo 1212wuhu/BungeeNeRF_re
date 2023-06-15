@@ -4,6 +4,47 @@ This repository contains the code release for
 
 ![scheme](imgs/training_mechanism.png)
 
+## 写在前面
+本仓库完成了BungeeNeRF: Progressive Neural Radiance Field for Extreme Multi-scale Scene Rendering代码复现部分，并新增了有助于添加自身数据集的py脚本。
+
+原论文已经开源，本仓库的目的是更详尽的记录代码复现的过程，如涉及侵权，请联系作者（geyuan-zhu@foxmail.com）删除此仓库。
+
+## 原作者数据集训练
+
+原作者数据集已经在其[Google Drive](https://drive.google.com/drive/folders/1ybq-BuRH0EEpcp5OZT9xEMi-Px1pdx4D?usp=sharing)云盘中提供下载。下对此数据集做一些说明：
+
+原论文分为4个阶段对数据集进行了训练，分别依次制定超参`cur_stage`为`0`、`1`、`2`、`3`来实现由远至近的场景训练。
+
+4080单卡训练在其不同阶段需要大约3h、7h、19h、27h（100000轮次训练）根据原作者的建议，在`cur_stage=0`和`cur_stage=1`时观测到已经收敛可提前结束训练。
+
+参考PSNR值为23左右。
+
+不同阶段训练建议制定不同的`expname`值，用来分开模型检查点。
+
+## 原作者数据集渲染
+
+超参`factor`指定了渲染和训练分辨率，为`1/n`；
+
+超参`holdout`为1时为渲染所有图像，建议设置为1；
+
+超参`ft_path`指定了渲染所用的模型。
+
+## 自身数据集训练
+
+替换数据集需要在[Google Earth Studio](https://earth.google.com/studio/)中构建。需要注意的是，原作者数据集构建了7个由远至进的场景，并将其切分为【3,2,1,1】来进行训练。
+
+在Google Earth Studio构建完数据集后，需要导出本地坐标系统的镜头跟踪3d.json文件，利用GES2pose.py进行坐标系的转换。
+
+mkimages.py可以帮助减少图像，由于谷歌地球是按帧输出图像，所以可视具体情况取原数据集图像的1/3或1/5。
+
+mkjson.py可以帮助转换GES2pose.py生成的json文件转换至较小规模的Json文件，以便和图像一一对应。
+
+新增了`re_start_optimizer`超参，用于人工重置optimizer。
+
+如果训练开始时出现`xxx 缺失`的情况，多半是导出json文件时未调整为本地坐标系。
+
+# 原仓库readme
+
 ## Abstract
 Neural Radiance Field (NeRF) has achieved outstanding performance in modeling 3D objects and controlled scenes, usually under a single scale. 
 In this work, we focus on multi-scale cases where large changes in imagery are observed at drastically different scales. 
