@@ -43,6 +43,8 @@ mkjson.py可以帮助转换GES2pose.py生成的json文件转换至较小规模�
 
 如果训练开始时出现`xxx 缺失`的情况，多半是导出json文件时未调整为本地坐标系。
 
+我实现了一个新的esp文件（begin(3).esp），可直接导入google earth studio使用。此esp标准了挪威第一高楼。请调整不同场景的距离以实现更好的训练效果。
+
 # 原仓库readme
 
 ## Abstract
